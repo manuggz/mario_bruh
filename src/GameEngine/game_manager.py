@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-
+from src.util.constants import *
 
 def init_pygame():
     pygame.init()
@@ -11,14 +11,14 @@ class GameManager:
     def __init__(self):
         self.quit = False
         self.screen = None
-        self.size_screen = Rect(0, 0, 640, 480)
         self.interfaces = []
 
         init_pygame()
         self.set_mode()
 
     def set_mode(self):
-        self.screen = pygame.display.set_mode(self.size_screen.size)
+        self.screen = pygame.display.set_mode(SCREEN_SIZE)
+        self.rect_screen = self.screen.get_rect()
 
     def push_interface(self, nueva_interface):
 
