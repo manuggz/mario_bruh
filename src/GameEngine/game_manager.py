@@ -14,12 +14,16 @@ class GameManager:
         self.size_screen = Rect(0, 0, 640, 480)
         self.interfaces = []
 
+        init_pygame()
+        self.set_mode()
+
     def set_mode(self):
         self.screen = pygame.display.set_mode(self.size_screen.size)
 
     def push_interface(self, nueva_interface):
 
         if nueva_interface:
+            nueva_interface.draw(self.screen)
             self.interfaces.append(nueva_interface)
 
     def pop_interface(self):
@@ -41,13 +45,9 @@ class GameManager:
 
             if self.has_interface():
                 self.interfaces[-1].update()
-                self.interfaces[-1].draw(self.screen)
+                self.interfaces[-1].update_draw(self.screen)
 
             pygame.display.flip()
 
     def run(self):
-        if not pygame.display.get_init():
-            init_pygame()
-            self.set_mode()
-
         self.__main_loop()
