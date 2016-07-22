@@ -23,7 +23,10 @@ class GameManager:
     def push_interface(self, nueva_interface):
 
         if nueva_interface:
+
+            nueva_interface.start()
             nueva_interface.draw(self.screen)
+
             self.interfaces.append(nueva_interface)
 
     def pop_interface(self):
