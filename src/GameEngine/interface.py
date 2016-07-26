@@ -5,7 +5,7 @@ class Interface:
     def draw(self, screen):
         pass
 
-    def update(self):
+    def update(self,keys):
         pass
 
     def update_draw(self, screen):

@@ -1,4 +1,6 @@
 from pygame.locals import *
 
 FONDO_LIGHTBLUE = (107,140,255,255)
-SCREEN_SIZE = (640,480)
+SCREEN_SIZE = (320,240)
+TILE_SIZE = 16
+BLOQUE_NIL = 0

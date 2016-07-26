@@ -47,7 +47,7 @@ class GameManager:
                     self.quit = True
 
             if self.has_interface():
-                self.interfaces[-1].update()
+                self.interfaces[-1].update(pygame.key.get_pressed())
                 self.interfaces[-1].update_draw(self.screen)
 
             pygame.display.flip()
