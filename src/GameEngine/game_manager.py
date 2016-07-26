@@ -17,7 +17,7 @@ class GameManager:
         self.set_mode()
 
     def set_mode(self):
-        self.screen = pygame.display.set_mode(SCREEN_SIZE)
+        self.screen = pygame.display.set_mode(SCREEN_SIZE.size)
         self.rect_screen = self.screen.get_rect()
 
     def push_interface(self, nueva_interface):
