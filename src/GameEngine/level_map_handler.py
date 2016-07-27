@@ -185,6 +185,44 @@ class MapHandler:
                 tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
                 if tile_index != 0:
-                    collide_list.append((tile_index,(i,j)))
+                    collide_list.append((tile_index, (i, j)))
 
         return collide_list
+
+    def get_floor_dist(self, x, y, max_dist):
+        "Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"
+
+        for dy in range(max_dist):
+            if (y + dy) % TILE_SIZE == 0 and self.matrix_tiles[int((y + dy) // TILE_SIZE)][x // TILE_SIZE] != 0:
+                return dy
+
+        return max_dist
+
+    def get_nearest_bottom_tile(self, rect, max_deep):
+
+        rect_collide = create_camera_rect(rect)
+
+        n_columns = rect_collide.width // TILE_SIZE
+
+        i_init_matriz = rect_collide.bottom // TILE_SIZE
+        j_init_matriz = rect_collide.x // TILE_SIZE
+
+        for i in range(max_deep):
+
+            i_matrix = i_init_matriz + i
+            if i_matrix >= self.n_rows:
+                return None
+
+            for j in range(n_columns):
+
+                j_matrix = j_init_matriz + j
+
+                if j_matrix >= self.n_cols:
+                    break
+
+                tile_index = self.matrix_tiles[i_matrix][j_matrix]
+
+                if tile_index != 0:
+                    return tile_index, (i_matrix, j_matrix), rect_collide.bottom - rect.bottom + i * TILE_SIZE
+
+        return None
