@@ -17,7 +17,7 @@ class MarioLevel(Interface):
         self.current_level = 1
         self.map_handler = MapHandler()
 
-        self.camera = MapCamera(0,0,SCREEN_SIZE.width,SCREEN_SIZE.height) #NOTE: Camera Size is predefined to be the screen size
+        self.camera = MapCamera(0,TILE_SIZE/2,SCREEN_SIZE.width,SCREEN_SIZE.height) #NOTE: Camera Size is predefined to be the screen size
         self.camera.set_maphandler(self.map_handler)
 
     def start(self):
@@ -33,12 +33,6 @@ class MarioLevel(Interface):
 
         if keys[K_LEFT]:
             self.camera.move(-1, 0)
-
-        if keys[K_UP]:
-            self.camera.move(0, -1)
-
-        if keys[K_DOWN]:
-            self.camera.move(0, 1)
 
     def draw(self, screen):
 

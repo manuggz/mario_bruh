@@ -1,6 +1,6 @@
 from os.path import join
 import pygame
-from pygame.locals import SRCALPHA,Rect
+from pygame.locals import SRCALPHA, Rect
 from src.util.constants import TILE_SIZE
 
 
@@ -67,7 +67,7 @@ class MapHandler:
         self.n_rows, self.n_cols, self.n_tiles = read_n_rows_columns_num_tiles(file_level)
 
         if self.is_map_loaded: self.check_loaded_tileset()  # We check that we can cover the tiles with our current
-        #tile set
+        # tile set
 
         i = 0
         while i < self.n_rows:
@@ -96,8 +96,12 @@ class MapHandler:
         self.rect_full_map = Rect(0, 0, self.n_cols * TILE_SIZE, self.n_rows * TILE_SIZE)
         self.is_map_loaded = True
 
+    def clamp_rect(self, rect):
+        return rect.clamp(self.rect_full_map)
+
     def has_map_loaded(self):
         return self.is_map_loaded
+
     def load_tileset(self, path_to_file_image):
 
         # Tile s image
@@ -130,9 +134,15 @@ class MapHandler:
         src_srfc_tile_rect = Rect(0, 0, TILE_SIZE, TILE_SIZE)
 
         for i in range(n_rows):
+
+            i_matrix = i_init_matriz + i
+            if i_matrix >= self.n_rows: continue
+
             for j in range(n_columns):
-                i_matrix = i_init_matriz + i
+
                 j_matrix = j_init_matriz + j
+
+                if j_matrix >= self.n_cols: continue
 
                 tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
@@ -146,8 +156,8 @@ class MapHandler:
 
     def check_loaded_tileset(self):
         if normalize(self.tileset_surface.get_width(), TILE_SIZE) != self.tileset_surface.get_width() or \
-                                self.tileset_surface.get_width() // TILE_SIZE < self.n_tiles or \
+                                self.tileset_surface.get_width() // TILE_SIZE < (self.n_tiles - 1) or \
                         self.tileset_surface.get_height() != TILE_SIZE:
             raise AssertionError(
                 'Wrong tileset, {0} must be width>={1} , height={2} and contain {3} different aligned tiles.'.
-                format(self.path_to_tileset, self.n_tiles * TILE_SIZE, TILE_SIZE, self.n_tiles - 1))
+                    format(self.path_to_tileset, self.n_tiles * TILE_SIZE, TILE_SIZE, self.n_tiles - 1))
