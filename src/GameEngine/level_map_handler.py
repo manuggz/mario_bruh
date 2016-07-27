@@ -115,9 +115,6 @@ class MapHandler:
     def is_rect_out_of_map_bounds(self, rect):
         return not self.rect_full_map.contains(rect)
 
-    def clamp_rect(self, rect):
-        return rect.clamp(self.rect_full_map)
-
     # Create a Surface that contains/draws all the visible tiles that are contained in rect_cut
     def create_image(self, rect_camera_map):
         # pre: rect_image must be created <TILE_SIZE*rows>X<TILE_SIZE*columns>
@@ -161,3 +158,33 @@ class MapHandler:
             raise AssertionError(
                 'Wrong tileset, {0} must be width>={1} , height={2} and contain {3} different aligned tiles.'.
                     format(self.path_to_tileset, self.n_tiles * TILE_SIZE, TILE_SIZE, self.n_tiles - 1))
+
+    def collide_map(self, rect):
+        assert self.is_map_loaded, "There's no map loaded yet!"
+
+        rect_collide = create_camera_rect(rect)
+
+        n_rows = rect_collide.height // TILE_SIZE
+        n_columns = rect_collide.width // TILE_SIZE
+
+        i_init_matriz = rect_collide.y // TILE_SIZE
+        j_init_matriz = rect_collide.x // TILE_SIZE
+
+        collide_list = []
+        for i in range(n_rows):
+
+            i_matrix = i_init_matriz + i
+            if i_matrix >= self.n_rows: continue
+
+            for j in range(n_columns):
+
+                j_matrix = j_init_matriz + j
+
+                if j_matrix >= self.n_cols: continue
+
+                tile_index = self.matrix_tiles[i_matrix][j_matrix]
+
+                if tile_index != 0:
+                    collide_list.append((tile_index,(i,j)))
+
+        return collide_list

@@ -52,3 +52,9 @@ class MapCamera:
         rect_area_visible.x -= self.rect_map_hidden_camera.x
         rect_area_visible.y -= self.rect_map_hidden_camera.y
         screen.blit(self.map_tile_surface, self.pos_dest_screen, rect_area_visible)
+
+    def get_x(self):
+        return self.rect_map_visible_camera.x
+
+    def get_y(self):
+        return self.rect_map_visible_camera.y

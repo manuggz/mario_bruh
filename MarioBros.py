@@ -4,5 +4,5 @@ from src.GameArena.mario_level import MarioLevel
 
 if __name__ == "__main__":
     gm = GameManager("Mario Bruh")
-    gm.push_interface(MarioLevel())
+    gm.push_interface(MarioLevel(gm))
     gm.run()

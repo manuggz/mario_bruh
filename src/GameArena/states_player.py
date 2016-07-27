@@ -9,15 +9,25 @@ class State:
         self.sprite_sheet = sprite_sheet
         self.animation = Animation(frames)
 
+        self.rect = self.sprite_sheet.get_rect()
+        self.rect.x = self.x - self.rect.w / 2
+        self.rect.y = self.y - self.rect.h
+
+        self.image = self.sprite_sheet.get(*self.animation.get_current_frame())
+
     def update(self, keys):
         self.animation.update()
+        self.image = self.sprite_sheet.get(*self.animation.get_current_frame())
 
-    def get_frame(self):
-        image = self.sprite_sheet.get(*self.animation.get_current_frame())
-        rect = image.get_rect()
-        rect.x = self.x - rect.w / 2
-        rect.y = self.y - rect.h
-        return image, rect
+    def get_image(self):
+        return self.image
+
+    def get_rect(self):
+        return self.rect
+
+    def update_rect(self):
+        self.rect.x = self.x - self.rect.w / 2
+        self.rect.y = self.y - self.rect.h
 
 
 class WalkingRight(State):
@@ -28,6 +38,9 @@ class WalkingRight(State):
         super().update(keys)
         if keys[K_RIGHT]:
             self.x += 1
+            self.update_rect()
+            if self.parent.is_out_of_screen_bounds(self.rect) or self.parent.collide_map(self.rect.copy()):
+                self.x -= 1
         else:
             self.parent.change_status(StandingRight(self.parent, self.x, self.y, self.sprite_sheet))
 
@@ -40,6 +53,9 @@ class WalkingLeft(State):
         super().update(keys)
         if keys[K_LEFT]:
             self.x -= 1
+            self.update_rect()
+            if self.parent.is_out_of_screen_bounds(self.rect) or self.parent.collide_map(self.rect.copy()):
+                self.x += 1
         else:
             self.parent.change_status(StandingLeft(self.parent, self.x, self.y, self.sprite_sheet))
 

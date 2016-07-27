@@ -24,3 +24,9 @@ class SpriteSheet:
 
     def get(self, row, col):
         return self.frame_list[row - 1][col - 1]
+
+    def get_rect(self):
+        rect = self.rect_frame_focus.copy()
+        rect.x = 0
+        rect.y = 0
+        return rect
