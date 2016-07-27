@@ -1,7 +1,9 @@
-from os.path import join
-
+import  pygame
 from pygame.locals import *
+
+from src.GameArena.player_mario import PlayerMario
 from src.GameEngine.level_map_handler import MapHandler
+from os.path import join
 
 from src.GameEngine.interface import Interface
 from src.GameEngine.map_camera import MapCamera
@@ -20,6 +22,9 @@ class MarioLevel(Interface):
         self.camera = MapCamera(0,TILE_SIZE/2,SCREEN_SIZE.width,SCREEN_SIZE.height) #NOTE: Camera Size is predefined to be the screen size
         self.camera.set_maphandler(self.map_handler)
 
+        self.players = pygame.sprite.RenderPlain()
+        self.players.add(PlayerMario(32,29*TILE_SIZE - TILE_SIZE/2))
+
     def start(self):
 
         self.map_handler.load_map(join('media', 'levels', 'level{}.txt'.format(self.current_level)))
@@ -28,11 +33,7 @@ class MarioLevel(Interface):
 
     def update(self, keys):
 
-        if keys[K_RIGHT]:
-            self.camera.move(1, 0)
-
-        if keys[K_LEFT]:
-            self.camera.move(-1, 0)
+        self.players.update(keys)
 
     def draw(self, screen):
 
@@ -42,6 +43,7 @@ class MarioLevel(Interface):
     def update_draw(self, screen):
         screen.fill(FONDO_LIGHTBLUE)
         self.camera.draw(screen)
+        self.players.draw(screen)
 
 
 
