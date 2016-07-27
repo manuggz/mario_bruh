@@ -1,10 +1,11 @@
 from os.path import join
 
-from src.GameArena.level_map_handler import MapHandler
-from src.GameArena.map_camera import MapCamera
-from src.GameEngine.interface import Interface
-from src.util.constants import *
 from pygame.locals import *
+from src.GameEngine.level_map_handler import MapHandler
+
+from src.GameEngine.interface import Interface
+from src.GameEngine.map_camera import MapCamera
+from src.util.constants import *
 
 
 class MarioLevel(Interface):

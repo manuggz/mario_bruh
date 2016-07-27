@@ -1,6 +1,7 @@
 from os.path import join
 import pygame
-from src.util.constants import *
+from pygame.locals import SRCALPHA,Rect
+from src.util.constants import TILE_SIZE
 
 
 def normalize(n, unit):
@@ -135,7 +136,7 @@ class MapHandler:
 
                 tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
-                if tile_index != BLOQUE_NIL:
+                if tile_index != 0:
                     src_srfc_tile_rect.x = TILE_SIZE * (tile_index - 1)
                     image_map_tile.blit(self.tileset_surface, (
                         (j_matrix - j_init_matriz) * TILE_SIZE, (i_matrix - i_init_matriz) * TILE_SIZE),

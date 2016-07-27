@@ -1,5 +1,6 @@
 from pygame.locals import Rect
-from src.GameArena.level_map_handler import MapHandler, create_camera_rect
+
+from src.GameEngine.level_map_handler import MapHandler, create_camera_rect
 
 
 # Controls  Camera(Rect that define what part of the map is showing on screen)
