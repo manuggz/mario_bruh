@@ -8,7 +8,6 @@ def normalize(n, unit):
 
 
 def create_camera_rect(rect_camera_visible):
-
     rect_camera_map = rect_camera_visible.copy()
     rect_camera_map.x = normalize(rect_camera_visible.x, TILE_SIZE)
     rect_camera_map.y = normalize(rect_camera_visible.y, TILE_SIZE)
@@ -24,29 +23,73 @@ def create_camera_rect(rect_camera_visible):
     return rect_camera_map
 
 
-class LevelMapHandler:
+def get_integer_gt0(value, name_value):
+    try:
+        value = int(value)
+        if value <= 0:
+            raise Exception(name_value + " {} must be greater than zero".format(value))
 
+        return value
+    except ValueError:
+        raise Exception(name_value + " {} must be an Integer".format(value))
+
+
+def read_n_rows_columns_num_tiles(file_level):
+    n_rows, n_cols, n_tiles = file_level.readline().strip().split(" ")
+    n_rows = get_integer_gt0(n_rows, "rows")
+    n_cols = get_integer_gt0(n_cols, "columns")
+    n_tiles = get_integer_gt0(n_tiles, "n_tiles")
+    return n_rows, n_cols, n_tiles
+
+
+class MapHandler:
     def __init__(self):
-        self.matrix_level = None
-        self.rect_map = None
-        self.tiles = None
 
-    def load(self, n_level):
+        self.matrix_tiles = None
+        self.rect_full_map = None
+        self.tileset_surface = None
+
+    def load(self, path_to_file_level, path_to_file_image):
 
         # Tile s positioning data
-        file_level = open(join('media', 'levels', 'level{}.txt'.format(n_level)))
+        file_level = open(path_to_file_level)
 
-        self.matrix_level = [[int(i) for i in list(line.strip())] for line in file_level.readlines()]
+        self.matrix_tiles = []
+        # lines = file_level.readlines()
+        # n_lines = len(lines)
+        n_rows, n_cols, n_tiles = read_n_rows_columns_num_tiles(file_level)
+
+        i = 0
+        while i < n_rows:
+            j = 0
+            line = list(file_level.readline().strip())
+            while j < n_cols:
+                try:
+                    line[j] = int(line[j])
+                    if line[j] < 0 or line[j] >= n_tiles:
+                        raise Exception("Tile Value at ({0},{1}) must be in range {2}-{3}. '{4}' not permitted".
+                                         format(i + 2, j + 1, 0, n_tiles - 1, line[j]))
+
+                except ValueError:
+                    raise Exception("Tile Value at ({0},{1}) must be an Integer. '{2}' not permitted".
+                                     format(i + 2, j + 1, line[j]))
+
+                j += 1
+
+            self.matrix_tiles.append(line)
+            i += 1
+
         file_level.close()
-        self.rect_map = Rect(0, 0, len(self.matrix_level[0]) * TILE_SIZE, len(self.matrix_level) * TILE_SIZE)
+        self.rect_full_map = Rect(0, 0, len(self.matrix_tiles[0]) * TILE_SIZE, len(self.matrix_tiles) * TILE_SIZE)
         # Tile s image
-        self.tiles = pygame.image.load(join('media', 'sprites', 'tiles-level{}.bmp'.format(n_level)))
+        self.tileset_surface = pygame.image.load(path_to_file_image)
+
 
     def is_rect_out_of_map_bounds(self, rect):
-        return not self.rect_map.contains(rect)
+        return not self.rect_full_map.contains(rect)
 
     def clamp_rect(self, rect):
-        return rect.clamp(self.rect_map)
+        return rect.clamp(self.rect_full_map)
 
     # Create a Surface that contains/draws all the visible tiles that are contained in rect_cut
     def create_image(self, rect_camera_map):
@@ -67,11 +110,12 @@ class LevelMapHandler:
                 i_matrix = i_init_matriz + i
                 j_matrix = j_init_matriz + j
 
-                tile_index = self.matrix_level[i_matrix][j_matrix]
+                tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
                 if tile_index != BLOQUE_NIL:
                     src_srfc_tile_rect.x = TILE_SIZE * (tile_index - 1)
-                    image_map_tile.blit(self.tiles, (
-                    (j_matrix - j_init_matriz) * TILE_SIZE, (i_matrix - i_init_matriz) * TILE_SIZE), src_srfc_tile_rect)
+                    image_map_tile.blit(self.tileset_surface, (
+                        (j_matrix - j_init_matriz) * TILE_SIZE, (i_matrix - i_init_matriz) * TILE_SIZE),
+                                        src_srfc_tile_rect)
 
         return image_map_tile

@@ -1,4 +1,6 @@
-from src.GameArena.level_map_handler import LevelMapHandler
+from os.path import join
+
+from src.GameArena.level_map_handler import MapHandler
 from src.GameArena.map_camera import MapCamera
 from src.GameEngine.interface import Interface
 from src.util.constants import *
@@ -12,15 +14,15 @@ class MarioLevel(Interface):
         super().__init__()
 
         self.current_level = 1
-
-        self.map_handler = LevelMapHandler()
+        self.map_handler = MapHandler()
 
         self.camera = MapCamera(0,0,SCREEN_SIZE.width,SCREEN_SIZE.height) #NOTE: Camera Size is predefined to be the screen size
         self.camera.set_maphandler(self.map_handler)
 
     def start(self):
 
-        self.map_handler.load(1)
+        self.map_handler.load(join('media', 'levels', 'level{}.txt'.format(self.current_level)),
+                              join('media', 'sprites', 'tiles-level{}.bmp'.format(self.current_level)))
         self.camera.init()
 
     def update(self, keys):
@@ -30,6 +32,12 @@ class MarioLevel(Interface):
 
         if keys[K_LEFT]:
             self.camera.move(-1, 0)
+
+        if keys[K_UP]:
+            self.camera.move(0, -1)
+
+        if keys[K_DOWN]:
+            self.camera.move(0, 1)
 
     def draw(self, screen):
 
