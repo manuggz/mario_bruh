@@ -4,6 +4,7 @@ from src.GameArena.level_map_handler import MapHandler, create_camera_rect
 
 # Controls  Camera(Rect that define what part of the map is showing on screen)
 class MapCamera:
+
     def __init__(self, x_init_camera, y_init_camera, width_camera, height_camera):
 
         self.rect_map_visible_camera = Rect(x_init_camera, y_init_camera, width_camera, height_camera)
@@ -17,6 +18,7 @@ class MapCamera:
     # Start the camera setting buffers
     def init(self):
         assert self.map_handler is not None, "There's not a " + str(MapHandler.__class__) + " instance "
+        assert self.map_handler.has_map_loaded() , "MapHandler has no map loaded yet!"
         self.__create_buffer()
 
     def __create_buffer(self):

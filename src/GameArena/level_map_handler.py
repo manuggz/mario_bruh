@@ -95,6 +95,8 @@ class MapHandler:
         self.rect_full_map = Rect(0, 0, self.n_cols * TILE_SIZE, self.n_rows * TILE_SIZE)
         self.is_map_loaded = True
 
+    def has_map_loaded(self):
+        return self.is_map_loaded
     def load_tileset(self, path_to_file_image):
 
         # Tile s image
