@@ -21,8 +21,8 @@ class MarioLevel(Interface):
 
     def start(self):
 
-        self.map_handler.load(join('media', 'levels', 'level{}.txt'.format(self.current_level)),
-                              join('media', 'sprites', 'tiles-level{}.bmp'.format(self.current_level)))
+        self.map_handler.load_map(join('media', 'levels', 'level{}.txt'.format(self.current_level)))
+        self.map_handler.load_tileset(join('media', 'sprites', 'tiles-level{}.bmp'.format(self.current_level)))
         self.camera.init()
 
     def update(self, keys):
