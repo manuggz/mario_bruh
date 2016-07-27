@@ -3,6 +3,6 @@ from src.GameEngine.color_interface import ColorInterface
 from src.GameArena.mario_level import MarioLevel
 
 if __name__ == "__main__":
-    gm = GameManager()
+    gm = GameManager("Mario Bruh")
     gm.push_interface(MarioLevel())
     gm.run()

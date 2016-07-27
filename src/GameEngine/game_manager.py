@@ -1,20 +1,23 @@
 import pygame
-from pygame.locals import *
+
 from src.util.constants import *
+from src.util.constants import FPS_GAME
+
 
 def init_pygame():
     pygame.init()
 
 
 class GameManager:
-
-    def __init__(self):
+    def __init__(self, caption):
         self.quit = False
         self.screen = None
         self.interfaces = []
 
         init_pygame()
         self.set_mode()
+        pygame.display.set_caption(caption)
+        self.clock = pygame.time.Clock()
 
     def set_mode(self):
         self.screen = pygame.display.set_mode(SCREEN_SIZE.size)
@@ -23,7 +26,6 @@ class GameManager:
     def push_interface(self, nueva_interface):
 
         if nueva_interface:
-
             nueva_interface.start()
             nueva_interface.draw(self.screen)
 
@@ -45,12 +47,18 @@ class GameManager:
             for event in pygame.event.get():
                 if event.type == QUIT:
                     self.quit = True
+                elif event.type == KEYDOWN:
+                    if event.key == K_F5:
+                        pygame.display.toggle_fullscreen()
+                    elif event.key == K_q:
+                        self.quit = True
 
             if self.has_interface():
                 self.interfaces[-1].update(pygame.key.get_pressed())
                 self.interfaces[-1].update_draw(self.screen)
 
             pygame.display.flip()
+            self.clock.tick(FPS_GAME)
 
     def run(self):
         self.__main_loop()
