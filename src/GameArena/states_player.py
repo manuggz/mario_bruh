@@ -68,27 +68,18 @@ class Falling(State):
     def update(self, keys):
         super().update(keys)
 
-        dy = self.player.get_floor_dist(self.max_speed)
+        try:
+            dy = self.player.get_floor_dist(self.max_speed)
+        except IndexError:
+            self.player.change_state(StandingRight(self.player))
+            return
+
         if dy == 0:
             if self.animation.get_current_frame()[0] == 1:
                 self.player.change_state(StandingRight(self.player))
             else:
                 self.player.change_state(StandingLeft(self.player))
             return
-
-        #if keys[K_LEFT]:
-        #    self.player.move(-self.player.move_speed, 0)
-        #    if self.player.is_out_of_screen_bounds() or self.player.collide_map():
-        #        self.player.move(+self.player.move_speed, 0)
-
-        #    self.animation.set_frames([(2, 8)])
-
-        #elif keys[K_RIGHT]:
-        #    self.player.move(self.player.move_speed, 0)
-        #    if self.player.is_out_of_screen_bounds() or self.player.collide_map():
-        #        self.player.move(-self.player.move_speed, 0)
-
-        #   self.animation.set_frames([(1, 7)])
 
         if dy > int(self.speed):
             self.player.move(0, int(self.speed))
