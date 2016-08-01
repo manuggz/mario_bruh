@@ -126,10 +126,10 @@ class StandingLeft(State):
 
 
 class Jumping(State):
-    "Representa el estado 'saltando'"
+    """Representa el estado 'saltando'"""
 
     def __init__(self, player, vy, frames):
-        "Inicia un salto con velocidad inicial indicada por el parametro vy"
+        """Inicia un salto con velocidad inicial indicada por el parametro vy"""
 
         super().__init__(player, frames)
         self.vy = vy

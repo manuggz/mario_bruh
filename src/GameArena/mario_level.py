@@ -38,7 +38,7 @@ class MarioLevel(Interface):
         return self.map_handler.collide_map(rect)
 
     def get_floor_dist(self, x, y, max_dist):
-        "Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"
+        """Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"""
         return self.map_handler.get_floor_dist(x, y, max_dist)
 
     def has_solid_bottom(self, rect):
@@ -50,11 +50,11 @@ class MarioLevel(Interface):
         self.camera.update()
 
     def draw(self, screen):
-        screen.fill(FONDO_LIGHTBLUE)
+        screen.fill(COLOR_LIGHTBLUE)
         self.camera.draw(screen)
 
     def update_draw(self, screen):
-        screen.fill(FONDO_LIGHTBLUE)
+        screen.fill(COLOR_LIGHTBLUE)
         self.camera.draw(screen)
 
         for player in self.players:

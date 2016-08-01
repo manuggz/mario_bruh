@@ -1,9 +1,9 @@
 from os.path import join
 
 import pygame
+from src.game_engine_ggz.sprite_sheet import SpriteSheet
 
 from src.GameArena.states_player import StandingRight
-from src.game_engine_ggz.sprite_sheet import SpriteSheet
 
 
 class PlayerMario(pygame.sprite.Sprite):
@@ -46,5 +46,5 @@ class PlayerMario(pygame.sprite.Sprite):
         return self.stage.collide_map(self.rect.copy())
 
     def get_floor_dist(self, max_dist):
-        "Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"
+        """Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"""
         return self.stage.get_floor_dist(self.x, self.y, max_dist)
