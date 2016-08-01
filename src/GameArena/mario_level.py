@@ -1,12 +1,11 @@
-import pygame
-from pygame.locals import *
-
-from src.GameArena.player_mario import PlayerMario
-from src.GameEngine.level_map_handler import MapHandler
 from os.path import join
 
-from src.GameEngine.interface import Interface
-from src.GameEngine.map_camera import MapCamera
+import pygame
+
+from src.GameArena.player_mario import PlayerMario
+from src.game_engine_ggz.interface import Interface
+from src.game_engine_ggz.level_map_handler import MapHandler
+from src.game_engine_ggz.map_camera import MapCamera
 from src.util.constants import *
 
 
@@ -15,9 +14,10 @@ class MarioLevel(Interface):
         super().__init__(parent)
 
         self.current_level = 1
-        self.map_handler = MapHandler()
+        self.map_handler = MapHandler(TILE_SIZE)
 
-        self.camera = MapCamera(0, 0, SCREEN_SIZE.width,SCREEN_SIZE.height)  # NOTE: Camera Size is predefined to be the screen size
+        self.camera = MapCamera(0, 0, SCREEN_SIZE.width,
+                                SCREEN_SIZE.height)  # NOTE: Camera Size is predefined to be the screen size
         self.camera.set_maphandler(self.map_handler)
 
         self.players = pygame.sprite.RenderPlain()
@@ -39,7 +39,7 @@ class MarioLevel(Interface):
 
     def get_floor_dist(self, x, y, max_dist):
         "Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"
-        return self.map_handler.get_floor_dist(x, y , max_dist)
+        return self.map_handler.get_floor_dist(x, y, max_dist)
 
     def has_solid_bottom(self, rect):
         nearest = self.map_handler.get_nearest_bottom_tile(rect, 1)
@@ -61,4 +61,4 @@ class MarioLevel(Interface):
             rect = player.rect.copy()
             rect.x -= self.camera.get_x()
             rect.y -= self.camera.get_y()
-            screen.blit(player.image,rect)
+            screen.blit(player.image, rect)

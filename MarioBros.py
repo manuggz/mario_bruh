@@ -1,6 +1,5 @@
-from  src.GameEngine.game_manager import GameManager
-from src.GameEngine.color_interface import ColorInterface
 from src.GameArena.mario_level import MarioLevel
+from  src.game_engine_ggz.game_manager import GameManager
 
 if __name__ == "__main__":
     gm = GameManager("Mario Bruh")

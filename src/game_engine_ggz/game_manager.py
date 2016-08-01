@@ -1,7 +1,5 @@
 import pygame
-
-from src.util.constants import *
-from src.util.constants import FPS_GAME
+from pygame.locals import *
 
 
 def init_pygame():
@@ -9,19 +7,21 @@ def init_pygame():
 
 
 class GameManager:
-    def __init__(self, caption):
+    def __init__(self, caption, size=(320, 240), fps=100):
         self.quit = False
-        self.screen = None
         self.interfaces = []
+        self.size = size
+        self.fps = fps
+        self.caption = caption
 
         init_pygame()
         self.set_mode()
-        pygame.display.set_caption(caption)
         self.clock = pygame.time.Clock()
 
     def set_mode(self):
-        self.screen = pygame.display.set_mode(SCREEN_SIZE.size)
+        self.screen = pygame.display.set_mode(self.size)
         self.rect_screen = self.screen.get_rect()
+        pygame.display.set_caption(self.caption)
 
     def push_interface(self, nueva_interface):
 
@@ -38,10 +38,9 @@ class GameManager:
             return None
 
     def has_interface(self):
-
         return len(self.interfaces)
 
-    def __main_loop(self):
+    def run(self):
 
         while not self.quit:
             for event in pygame.event.get():
@@ -58,7 +57,4 @@ class GameManager:
                 self.interfaces[-1].update_draw(self.screen)
 
             pygame.display.flip()
-            self.clock.tick(FPS_GAME)
-
-    def run(self):
-        self.__main_loop()
+            self.clock.tick(self.fps)

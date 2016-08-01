@@ -1,25 +1,23 @@
-from os.path import join
 import pygame
 from pygame.locals import SRCALPHA, Rect
-from src.util.constants import TILE_SIZE
 
 
 def normalize(n, unit):
     return (n // unit) * unit
 
 
-def create_camera_rect(rect_camera_visible):
+def create_camera_rect(rect_camera_visible, tile_size):
     rect_camera_map = rect_camera_visible.copy()
-    rect_camera_map.x = normalize(rect_camera_visible.x, TILE_SIZE)
-    rect_camera_map.y = normalize(rect_camera_visible.y, TILE_SIZE)
+    rect_camera_map.x = normalize(rect_camera_visible.x, tile_size)
+    rect_camera_map.y = normalize(rect_camera_visible.y, tile_size)
 
-    rect_camera_map.width = normalize(rect_camera_visible.right, TILE_SIZE) - rect_camera_map.x
+    rect_camera_map.width = normalize(rect_camera_visible.right, tile_size) - rect_camera_map.x
     if rect_camera_visible.right > rect_camera_map.right:
-        rect_camera_map.width += TILE_SIZE
+        rect_camera_map.width += tile_size
 
-    rect_camera_map.height = normalize(rect_camera_visible.bottom, TILE_SIZE) - rect_camera_map.y
+    rect_camera_map.height = normalize(rect_camera_visible.bottom, tile_size) - rect_camera_map.y
     if rect_camera_visible.bottom > rect_camera_map.bottom:
-        rect_camera_map.height += TILE_SIZE
+        rect_camera_map.height += tile_size
 
     return rect_camera_map
 
@@ -44,7 +42,7 @@ def read_n_rows_columns_num_tiles(file_level):
 
 
 class MapHandler:
-    def __init__(self):
+    def __init__(self, tile_size):
 
         self.matrix_tiles = None
         self.rect_full_map = None
@@ -54,6 +52,7 @@ class MapHandler:
         self.n_cols = 0
         self.n_tiles = 0
         self.path_to_tileset = None
+        self.tile_size = tile_size
 
     # Load a file containing tile positioning
     def load_map(self, path_to_file_level):
@@ -66,7 +65,8 @@ class MapHandler:
         # n_lines = len(lines)
         self.n_rows, self.n_cols, self.n_tiles = read_n_rows_columns_num_tiles(file_level)
 
-        if self.is_map_loaded: self.check_loaded_tileset()  # We check that we can cover the tiles with our current
+        if self.is_map_loaded:
+            self.check_loaded_tileset()  # We check that we can cover the tiles with our current
         # tile set
 
         i = 0
@@ -93,7 +93,7 @@ class MapHandler:
             i += 1
 
         file_level.close()
-        self.rect_full_map = Rect(0, 0, self.n_cols * TILE_SIZE, self.n_rows * TILE_SIZE)
+        self.rect_full_map = Rect(0, 0, self.n_cols * self.tile_size, self.n_rows * self.tile_size)
         self.is_map_loaded = True
 
     def clamp_rect(self, rect):
@@ -122,65 +122,69 @@ class MapHandler:
 
         image_map_tile = pygame.Surface(rect_camera_map.size, SRCALPHA)
 
-        n_rows = rect_camera_map.height // TILE_SIZE
-        n_columns = rect_camera_map.width // TILE_SIZE
+        n_rows = rect_camera_map.height // self.tile_size
+        n_columns = rect_camera_map.width // self.tile_size
 
-        i_init_matriz = rect_camera_map.y // TILE_SIZE
-        j_init_matriz = rect_camera_map.x // TILE_SIZE
+        i_init_matriz = rect_camera_map.y // self.tile_size
+        j_init_matriz = rect_camera_map.x // self.tile_size
 
-        src_srfc_tile_rect = Rect(0, 0, TILE_SIZE, TILE_SIZE)
+        src_srfc_tile_rect = Rect(0, 0, self.tile_size, self.tile_size)
 
         for i in range(n_rows):
 
             i_matrix = i_init_matriz + i
-            if i_matrix >= self.n_rows: continue
+            if i_matrix >= self.n_rows:
+                continue
 
             for j in range(n_columns):
 
                 j_matrix = j_init_matriz + j
 
-                if j_matrix >= self.n_cols: continue
+                if j_matrix >= self.n_cols:
+                    continue
 
                 tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
                 if tile_index != 0:
-                    src_srfc_tile_rect.x = TILE_SIZE * (tile_index - 1)
+                    src_srfc_tile_rect.x = self.tile_size * (tile_index - 1)
                     image_map_tile.blit(self.tileset_surface, (
-                        (j_matrix - j_init_matriz) * TILE_SIZE, (i_matrix - i_init_matriz) * TILE_SIZE),
+                        (j_matrix - j_init_matriz) * self.tile_size, (i_matrix - i_init_matriz) * self.tile_size),
                                         src_srfc_tile_rect)
 
         return image_map_tile
 
     def check_loaded_tileset(self):
-        if normalize(self.tileset_surface.get_width(), TILE_SIZE) != self.tileset_surface.get_width() or \
-                                self.tileset_surface.get_width() // TILE_SIZE < (self.n_tiles - 1) or \
-                        self.tileset_surface.get_height() != TILE_SIZE:
+        if normalize(self.tileset_surface.get_width(), self.tile_size) != self.tileset_surface.get_width() or \
+                                self.tileset_surface.get_width() // self.tile_size < (
+                            self.n_tiles - 1) or self.tileset_surface.get_height() != self.tile_size:
             raise AssertionError(
-                'Wrong tileset, {0} must be width>={1} , height={2} and contain {3} different aligned tiles.'.
-                    format(self.path_to_tileset, self.n_tiles * TILE_SIZE, TILE_SIZE, self.n_tiles - 1))
+                'Wrong tileset, {0} must be width>={1} , height={2} and contain {3} different aligned tiles.'.format(
+                    self.path_to_tileset, self.n_tiles * self.tile_size, self.tile_size, self.n_tiles - 1))
 
     def collide_map(self, rect):
         assert self.is_map_loaded, "There's no map loaded yet!"
 
-        rect_collide = create_camera_rect(rect)
+        rect_collide = create_camera_rect(rect, self.tile_size)
 
-        n_rows = rect_collide.height // TILE_SIZE
-        n_columns = rect_collide.width // TILE_SIZE
+        n_rows = rect_collide.height // self.tile_size
+        n_columns = rect_collide.width // self.tile_size
 
-        i_init_matriz = rect_collide.y // TILE_SIZE
-        j_init_matriz = rect_collide.x // TILE_SIZE
+        i_init_matriz = rect_collide.y // self.tile_size
+        j_init_matriz = rect_collide.x // self.tile_size
 
         collide_list = []
         for i in range(n_rows):
 
             i_matrix = i_init_matriz + i
-            if i_matrix >= self.n_rows: continue
+            if i_matrix >= self.n_rows:
+                continue
 
             for j in range(n_columns):
 
                 j_matrix = j_init_matriz + j
 
-                if j_matrix >= self.n_cols: continue
+                if j_matrix >= self.n_cols:
+                    continue
 
                 tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
@@ -189,23 +193,28 @@ class MapHandler:
 
         return collide_list
 
+    def get_tile_size(self):
+        return self.tile_size
+
     def get_floor_dist(self, x, y, max_dist):
-        "Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"
+        """Obtiene la distancia entre el punto (x, y) y el proximo bloque solido hacia abajo"""
 
         for dy in range(max_dist):
-            if (y + dy) % TILE_SIZE == 0 and self.matrix_tiles[int((y + dy) // TILE_SIZE)][x // TILE_SIZE] != 0:
+            if (y + dy) % self.tile_size == 0 and self.matrix_tiles[int((y + dy) // self.tile_size)][
+                        x // self.tile_size] != 0:
                 return dy
 
         return max_dist
 
     def get_nearest_bottom_tile(self, rect, max_deep):
+        """"Regresa el primer tile que se encuentre hacia abajo"""
 
-        rect_collide = create_camera_rect(rect)
+        rect_collide = create_camera_rect(rect, self.tile_size)
 
-        n_columns = rect_collide.width // TILE_SIZE
+        n_columns = rect_collide.width // self.tile_size
 
-        i_init_matriz = rect_collide.bottom // TILE_SIZE
-        j_init_matriz = rect_collide.x // TILE_SIZE
+        i_init_matriz = rect_collide.bottom // self.tile_size
+        j_init_matriz = rect_collide.x // self.tile_size
 
         for i in range(max_deep):
 
@@ -223,6 +232,6 @@ class MapHandler:
                 tile_index = self.matrix_tiles[i_matrix][j_matrix]
 
                 if tile_index != 0:
-                    return tile_index, (i_matrix, j_matrix), rect_collide.bottom - rect.bottom + i * TILE_SIZE
+                    return tile_index, (i_matrix, j_matrix), rect_collide.bottom - rect.bottom + i * self.tile_size
 
         return None

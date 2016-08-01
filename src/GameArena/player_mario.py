@@ -1,8 +1,9 @@
-import pygame
 from os.path import join
-from pygame.locals import *
+
+import pygame
+
 from src.GameArena.states_player import StandingRight
-from src.GameEngine.sprite_sheet import SpriteSheet
+from src.game_engine_ggz.sprite_sheet import SpriteSheet
 
 
 class PlayerMario(pygame.sprite.Sprite):

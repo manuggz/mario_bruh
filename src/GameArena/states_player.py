@@ -1,7 +1,6 @@
-import pygame
-
-from src.GameEngine.animation import Animation
 from pygame.locals import *
+
+from src.game_engine_ggz.animation import Animation
 
 
 class State:
@@ -30,7 +29,7 @@ class WalkingRight(State):
             self.player.change_state(StandingRight(self.player))
 
         if (keys[K_SPACE] or keys[K_UP]) and not self.player.jump_pressed:
-            self.player.change_state(Jumping(self.player,self.player.jump_power,[(1,6)]))
+            self.player.change_state(Jumping(self.player, self.player.jump_power, [(1, 6)]))
         elif not (keys[K_SPACE] or keys[K_UP]):
             self.player.jump_pressed = False
 
@@ -53,7 +52,7 @@ class WalkingLeft(State):
             self.player.change_state(StandingLeft(self.player))
 
         if (keys[K_SPACE] or keys[K_UP]) and not self.player.jump_pressed:
-            self.player.change_state(Jumping(self.player,self.player.jump_power,[(2,9)]))
+            self.player.change_state(Jumping(self.player, self.player.jump_power, [(2, 9)]))
         elif not (keys[K_SPACE] or keys[K_UP]):
             self.player.jump_pressed = False
 
@@ -104,7 +103,7 @@ class StandingRight(State):
             self.player.change_state(WalkingLeft(self.player))
 
         if (keys[K_SPACE] or keys[K_UP]) and not self.player.jump_pressed:
-            self.player.change_state(Jumping(self.player,self.player.jump_power + 0.2,[(1,6)]))
+            self.player.change_state(Jumping(self.player, self.player.jump_power + 0.2, [(1, 6)]))
         elif not (keys[K_SPACE] or keys[K_UP]):
             self.player.jump_pressed = False
 
