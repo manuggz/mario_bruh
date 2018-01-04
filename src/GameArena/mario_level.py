@@ -11,7 +11,7 @@ from src.util.constants import *
 
 class MarioLevel(Interface):
     def __init__(self, parent):
-        super().__init__(parent)
+        Interface.__init__(self,parent)
 
         self.current_level = 1
         self.map_handler = MapHandler(TILE_SIZE)

@@ -14,10 +14,10 @@ class State:
 
 class WalkingRight(State):
     def __init__(self, player):
-        super().__init__(player, [(1, 2), (1, 3), (1, 4), (1, 3)])
+        State.__init__(self,player, [(1, 2), (1, 3), (1, 4), (1, 3)])
 
     def update(self, keys):
-        super().update(keys)
+        State.update(self,keys)
         if keys[K_RIGHT]:
             self.player.move(self.player.move_speed, 0)
             if self.player.is_out_of_screen_bounds() or self.player.collide_map():
@@ -36,10 +36,10 @@ class WalkingRight(State):
 
 class WalkingLeft(State):
     def __init__(self, player):
-        super().__init__(player, [(2, 13), (2, 12), (2, 11), (2, 12)])
+        State.__init__(self,player, [(2, 13), (2, 12), (2, 11), (2, 12)])
 
     def update(self, keys):
-        super().update(keys)
+        State.update(self,keys)
         if keys[K_LEFT]:
             self.player.move(-self.player.move_speed, 0)
             if self.player.is_out_of_screen_bounds() or self.player.collide_map():
@@ -59,13 +59,13 @@ class WalkingLeft(State):
 
 class Falling(State):
     def __init__(self, player, frames):
-        super().__init__(player, frames)
+        State.__init__(self,player, frames)
         self.acceleration = 0.3
         self.max_speed = 5
         self.speed = self.player.move_speed
 
     def update(self, keys):
-        super().update(keys)
+        State.update(self,keys)
 
         try:
             dy = self.player.get_floor_dist(self.max_speed)
@@ -92,10 +92,10 @@ class Falling(State):
 
 class StandingRight(State):
     def __init__(self, player):
-        super().__init__(player, [(1, 1)])
+        State.__init__(self,player, [(1, 1)])
 
     def update(self, keys):
-        super().update(keys)
+        State.update(self,keys)
 
         if keys[K_RIGHT]:
             self.player.change_state(WalkingRight(self.player))
@@ -110,10 +110,10 @@ class StandingRight(State):
 
 class StandingLeft(State):
     def __init__(self, player):
-        super().__init__(player, [(2, 14)])
+        State.__init__(self,player, [(2, 14)])
 
     def update(self, keys):
-        super().update(keys)
+        State.update(self,keys)
         if keys[K_RIGHT]:
             self.player.change_state(WalkingRight(self.player))
         elif keys[K_LEFT]:
@@ -131,12 +131,12 @@ class Jumping(State):
     def __init__(self, player, vy, frames):
         """Inicia un salto con velocidad inicial indicada por el parametro vy"""
 
-        super().__init__(player, frames)
+        State.__init__(self,player, frames)
         self.vy = vy
         self.player.jump_pressed = True
 
     def update(self, keys):
-        super().update(keys)
+        State.update(self,keys)
         self.vy += 0.2
         dy = int(self.vy)
 

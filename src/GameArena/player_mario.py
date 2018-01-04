@@ -8,7 +8,7 @@ from src.GameArena.states_player import StandingRight
 
 class PlayerMario(pygame.sprite.Sprite):
     def __init__(self, interface, x, y):
-        super().__init__()
+        pygame.sprite.Sprite.__init__(self)
         self.stage = interface
 
         self.x, self.y = x, y
