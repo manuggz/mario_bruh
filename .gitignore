@@ -1,0 +1,8 @@
+Lib
+Scripts
+tcl
+*.pyc
+staticfiles
+.env
+db.sqlite3
+pip-selfcheck.json
